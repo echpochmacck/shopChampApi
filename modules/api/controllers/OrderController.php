@@ -72,23 +72,22 @@ class OrderController extends \yii\rest\ActiveController
             if (!($cart = Cart::findOne(['user_id' => Yii::$app->user->id]))) {
                 // создание карзины
                 $cart = new Cart();
-                $cart->user_id = Yii::$app->user->id;
-                $cart->cart_sum = 0;
-                $cart->total_quantity = 1;
-                $cart->save(false);
+                $cart->user_id = Yii::$app->user->id;                
             }
+            
+            $cart->total_quantity++;
+            $cart->cart_sum += $product->price; 
+            $cart->save();
+
             if (!($cart_composition = CartComposition::findOne(['cart_id' => $cart->id, 'product_id' => $product->id]))) {
                 $cart_composition = new CartComposition();
                 $cart_composition->product_id = $product->id;
                 $cart_composition->cart_id = $cart->id;
-                $cart_composition->quantity = 1;
             }
             $cart_composition->quantity++;
-            $cart_composition->poisition_sum = Product::getPosSum($cart_composition->quantity, $product->price);
-            $cart->total_quantity++;
-            $cart->cart_sum++;
-            $cart->save(false);
-            $cart_composition->save(false);
+            $cart_composition->poisition_sum += $product->price;
+            
+            $cart_composition->save();
 
             return [
                 'data' => [
