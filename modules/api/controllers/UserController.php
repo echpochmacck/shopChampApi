@@ -105,7 +105,7 @@ class UserController extends \yii\rest\ActiveController
         $model->load(Yii::$app->request->post(), '');
         if ($model->validate()) {
             $model->password = Yii::$app->security->generatePasswordHash($model->password);
-            $model->role_id = Role::getRoleId('admin');
+            $model->role_id = Role::getRoleId('user');
             $model->cash = 2000;
             $model->save(false);
             Yii::$app->response->statusCode = 201;

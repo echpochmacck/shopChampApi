@@ -127,6 +127,14 @@ class Product extends \yii\db\ActiveRecord
                 ->where(['user_id' => Yii::$app->user->id])
             ;
         }
+        if (isset($data['order_id'])) {
+            $query
+                ->addSelect(['order.id as order_id', 'order_composition.quantity as quantity', 'order_composition.position_sum as position_sum'])
+                ->innerJoin('order_composition', 'product.id = order_composition.product_id')
+                ->innerJoin('order', 'order.id = order_composition.order_id')
+                ->where(['user_id' => Yii::$app->user->id])
+            ;
+        }
         if (isset($data['product_id'])) {
             return $query->one();
         } else {
