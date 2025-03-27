@@ -81,6 +81,7 @@ class OrderController extends \yii\rest\ActiveController
         $product = Product::findOne($id);
         if ($product) {
 
+
             if (!($cart = Cart::findOne(['user_id' => Yii::$app->user->id]))) {
                 // создание карзины
                 $cart = new Cart();
@@ -96,22 +97,31 @@ class OrderController extends \yii\rest\ActiveController
                 $cart_composition->product_id = $product->id;
                 $cart_composition->cart_id = $cart->id;
             }
-            $cart_composition->quantity++;
-            $cart_composition->poisition_sum += $product->price;
+            if ($product->quantity > $cart_composition->quantity) {
+                $cart_composition->quantity++;
+                $cart_composition->poisition_sum += $product->price;
 
-            $cart_composition->save();
+                $cart_composition->save();
 
-            return [
-                'data' => [
-                    'cart' => [
-                        'products' => Product::getProduct(['cart_id' => $cart->id]),
-                        'total_sum' => $cart->cart_sum
+                return [
+                    'data' => [
+                        'cart' => [
+                            'products' => Product::getProduct(['cart_id' => $cart->id]),
+                            'total_sum' => $cart->cart_sum
 
-                    ],
-                    'code' => 200,
-                    'message' => 'Товар добвален в корзину'
-                ]
-            ];
+                        ],
+                        'code' => 200,
+                        'message' => 'Товар добвален в корзину'
+                    ]
+                ];
+            } else {
+                return [
+                    'error' => [
+                        'code' => 403,
+                        'message' => 'Товар закончился'
+                    ]
+                ];
+            }
         } else {
             Yii::$app->response->statusCode = 404;
             return '';
@@ -123,6 +133,7 @@ class OrderController extends \yii\rest\ActiveController
     public function actionRemoveProduct($id)
     {
         $product = Product::findOne($id);
+
         if ($product) {
             if (!($cart = Cart::findOne(['user_id' => Yii::$app->user->id]))) {
                 Yii::$app->response->statusCode = 404;

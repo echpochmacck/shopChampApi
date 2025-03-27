@@ -2,19 +2,19 @@
 
 namespace app\modules\admin\controllers;
 
-use app\models\BlockInfo;
-use app\models\Order;
-use app\models\OrderAdnminSearch;
-use app\models\Status;
-use Yii;
+use app\models\File;
+use app\models\Product;
+use yii\data\ActiveDataProvider;
+use yii\data\ArrayDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
- * OrderController implements the CRUD actions for Order model.
+ * ProductController implements the CRUD actions for Product model.
  */
-class OrderController extends Controller
+class ProductController extends Controller
 {
     /**
      * @inheritDoc
@@ -35,22 +35,55 @@ class OrderController extends Controller
     }
 
     /**
-     * Lists all Order models.
+     * Lists all Product models.
      *
      * @return string
      */
     public function actionIndex()
     {
-        $searchModel = new OrderAdnminSearch();
-        $dataProvider = $searchModel->search($this->request->queryParams);
+        $products = Product::find()
+            ->asArray()
+            ->all();
+      
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => array_map(function ($product) {
+                $product['files'] = File::find()
+                    ->select(['title as file_url'])
+                    ->asArray()
+                    ->where(['prodcut_id' => $product['id']])
+                    ->all();
+                return $product;
+            }, $products),
+
+        ]);
+        // $products = Product::find();
+        // $dataProvider = new ActiveDataProvider([
+        //     'query' => array_map(function ($product) {
+        //         return $product->files = File::find()
+        //             ->select(['title as file_url'])
+        //             ->asArray()
+        //             ->where(['product_id' => $product->id])
+        //             ->all();
+        //     }, $products),
+        //     /*
+        //     'pagination' => [
+        //         'pageSize' => 50
+        //     ],
+        //     'sort' => [
+        //         'defaultOrder' => [
+        //             'id' => SORT_DESC,
+        //         ]
+        //     ],
+        //     */
+        // ]);
+
         return $this->render('index', [
-            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
 
     /**
-     * Displays a single Order model.
+     * Displays a single Product model.
      * @param int $id ID
      * @return string
      * @throws NotFoundHttpException if the model cannot be found
@@ -63,13 +96,13 @@ class OrderController extends Controller
     }
 
     /**
-     * Creates a new Order model.
+     * Creates a new Product model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return string|\yii\web\Response
      */
     public function actionCreate()
     {
-        $model = new Order();
+        $model = new Product();
 
         if ($this->request->isPost) {
             if ($model->load($this->request->post()) && $model->save()) {
@@ -85,7 +118,7 @@ class OrderController extends Controller
     }
 
     /**
-     * Updates an existing Order model.
+     * Updates an existing Product model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param int $id ID
      * @return string|\yii\web\Response
@@ -95,13 +128,11 @@ class OrderController extends Controller
     {
         $model = $this->findModel($id);
 
-
-
-        if ($this->request->isPost && $model->load($this->request->post(), 'Order')) {
-            if ($model->status_id == Status::getStatusId('Отменен')) {
-                return $this->redirect(['order/ban', 'id' => $model->id]);
-            } else {
-                $model->save();
+        if ($this->request->isPost && $model->load($this->request->post())) {
+            $model->files = UploadedFile::getInstances($model, 'files');
+            if ($model->validate()) {
+                $model->save(false);
+                $model->upload();
                 return $this->redirect(['view', 'id' => $model->id]);
             }
         }
@@ -110,24 +141,9 @@ class OrderController extends Controller
             'model' => $model,
         ]);
     }
-    public function actionBan($id)
-    {
-        $model = $this->findModel($id);
-
-        $ban = new BlockInfo();
-
-        if ($this->request->isPost && $ban->load($this->request->post())) {
-            $ban->order_id = $model->id;
-            $ban->Save(false);
-            return $this->redirect(['index']);
-        }
-        return $this->render('ban', [
-            'model' => $ban,
-        ]);
-    }
 
     /**
-     * Deletes an existing Order model.
+     * Deletes an existing Product model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param int $id ID
      * @return \yii\web\Response
@@ -141,15 +157,15 @@ class OrderController extends Controller
     }
 
     /**
-     * Finds the Order model based on its primary key value.
+     * Finds the Product model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID
-     * @return Order the loaded model
+     * @return Product the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Order::findOne(['id' => $id])) !== null) {
+        if (($model = Product::findOne(['id' => $id])) !== null) {
             return $model;
         }
 

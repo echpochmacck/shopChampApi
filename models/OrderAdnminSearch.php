@@ -41,7 +41,10 @@ class OrderAdnminSearch extends Order
      */
     public function search($params)
     {
-        $query = Order::find();
+        $query = Order::find()
+            ->select(['order.*', 'email as user_email', 'status.title as status', 'order.date as created_at'])
+            ->innerJoin('user', 'user.id = order.user_id')
+            ->innerJoin('status', 'status.id = order.status_id');
 
         // add conditions that should always apply here
 

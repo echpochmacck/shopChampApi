@@ -4,6 +4,7 @@
 # netbeans project files
 nbproject
 
+/web/uploads
 # zend studio for eclipse project files
 .buildpath
 .project

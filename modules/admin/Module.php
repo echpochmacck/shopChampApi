@@ -35,7 +35,6 @@ class Module extends \yii\base\Module
                         'allow' => true,
                         'controllers' => ['admin/default'],
                         'actions' => ['login'],
-                        // 'roles' => ['?'],
                     ],
                     
                     [

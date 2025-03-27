@@ -22,7 +22,7 @@ $config = [
             ]
 
         ],
-        
+
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
@@ -51,7 +51,7 @@ $config = [
         'db' => $db,
         'urlManager' => [
             'enablePrettyUrl' => true,
-            'enableStrictParsing' => true,
+            'enableStrictParsing' => false,
             'showScriptName' => false,
             'rules' => [
                 'admin/<controller>/<action>' => 'admin/<controller>/<action>',
@@ -62,9 +62,11 @@ $config = [
 
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
             ],
-        ]
+        ],
 
     ],
+    'defaultRoute' => 'admin/default/login',
+
     'modules' => [
         'admin' => [
             'class' => 'app\modules\admin\Module',

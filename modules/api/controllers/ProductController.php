@@ -62,7 +62,7 @@ class ProductController extends \yii\rest\ActiveController
     {
         return [
             'data' => [
-                'products' => Product::getProduct(),
+                'products' => Product::getProduct(['sort_quantity' => 1]),
                 'code' => 200,
                 'message' => 'список товаров получен'
             ]
@@ -79,7 +79,6 @@ class ProductController extends \yii\rest\ActiveController
                     'message' => 'список товаров получен'
                 ]
             ];
-
         } else {
             Yii::$app->response->statusCode = 404;
             return '';

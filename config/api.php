@@ -93,7 +93,8 @@ $config = [
                 'GET api/products/add/<id>' => 'api/order/add-product',
                 'DELETE api/products/add/<id>' => 'api/order/remove-product',
                 'GET api/cart' => 'api/order/get-cart',
-                'GET api/order/new' => 'api/order/make-order',
+                'POST api/order/new' => 'api/order/make-order',
+                'POST api/order2/new' => 'api/order2/make-order',
                 'GET api/order/<id>' => 'api/order/get-order',
                 // [
                 //     'class' => 'yii\rest\UrlRule',

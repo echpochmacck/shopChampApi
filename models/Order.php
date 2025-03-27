@@ -21,6 +21,9 @@ use Yii;
  */
 class Order extends \yii\db\ActiveRecord
 {
+    public $user_email = '';
+    public $status = '';
+    public $created_at = '';
     /**
      * {@inheritdoc}
      */

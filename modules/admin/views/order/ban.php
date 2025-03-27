@@ -1,26 +1,17 @@
 <?php
 
-use app\models\Status;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
-/** @var app\models\Order $model */
+/** @var app\models\BlockInfo $model */
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="order-form">
+<div class="block-info-form">
 
     <?php $form = ActiveForm::begin(); ?>
-
-    <?= $form->field($model, 'status_id')->dropDownList(
-
-        Status::find()
-            ->select(['status.title'])
-            ->indexBy('id')
-            ->column()
-
-    ) ?>
+    <?= $form->field($model, 'description')->textInput(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Отправить', ['class' => 'btn btn-success']) ?>

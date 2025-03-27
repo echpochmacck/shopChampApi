@@ -20,6 +20,7 @@ use Yii;
  */
 class Product extends \yii\db\ActiveRecord
 {
+    public $files = '';
     /**
      * {@inheritdoc}
      */
@@ -34,6 +35,7 @@ class Product extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+            ['files', 'file', 'extensions' => 'png, jpeg, jpg', 'maxFiles' => 3],
             [['title', 'description', 'price', 'quantity'], 'required'],
             [['price'], 'number'],
             [['quantity'], 'integer'],
@@ -127,12 +129,16 @@ class Product extends \yii\db\ActiveRecord
                 ->where(['user_id' => Yii::$app->user->id])
             ;
         }
+        if (isset($data['sort_quantity'])) {
+            $query
+                ->where('quantity > 0');
+        }
         if (isset($data['order_id'])) {
             $query
                 ->addSelect(['order.id as order_id', 'order_composition.quantity as quantity', 'order_composition.position_sum as position_sum'])
                 ->innerJoin('order_composition', 'product.id = order_composition.product_id')
                 ->innerJoin('order', 'order.id = order_composition.order_id')
-                ->where(['user_id' => Yii::$app->user->id])
+                ->where(['user_id' => Yii::$app->user->id, 'order.id' => $data['order_id']])
             ;
         }
         if (isset($data['product_id'])) {
@@ -155,5 +161,19 @@ class Product extends \yii\db\ActiveRecord
     public static function getPosSum($quantity, $price)
     {
         return $quantity * $price;
+    }
+    public function upload()
+    {
+        if (count($this->files)) {
+            foreach ($this->files as $file) {
+
+                $model = new File();
+                $path = Yii::$app->security->generateRandomString() . ".{$file->extension}";
+                $file->saveAs('uploads/' . $path);
+                $model->title = $path;
+                $model->prodcut_id = $this->id;
+                $model->save(false);
+            }
+        }
     }
 }
