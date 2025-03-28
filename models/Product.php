@@ -20,7 +20,9 @@ use Yii;
  */
 class Product extends \yii\db\ActiveRecord
 {
-    public $files = '';
+
+    public $newFiles = [];
+    // public $files = '';
     /**
      * {@inheritdoc}
      */
@@ -114,6 +116,8 @@ class Product extends \yii\db\ActiveRecord
                 'product.quantity as product_quantity',
                 // 'category_title'
             ])
+            // ->with('productCategories')
+            // ->with('category')
             // ->innerJoin(['t1' => $query1], 't1.id = product.id')
         ;
 
@@ -164,8 +168,8 @@ class Product extends \yii\db\ActiveRecord
     }
     public function upload()
     {
-        if (count($this->files)) {
-            foreach ($this->files as $file) {
+        if (count($this->newFiles)) {
+            foreach ($this->newFiles as $file) {
 
                 $model = new File();
                 $path = Yii::$app->security->generateRandomString() . ".{$file->extension}";

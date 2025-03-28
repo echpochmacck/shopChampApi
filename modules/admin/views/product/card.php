@@ -1,28 +1,39 @@
 <?php
 
 use yii\bootstrap5\Html;
+use yii\helpers\VarDumper;
 
+// VarDumper::dump($model->files[0], 10, true);
+// die;
+// var_dump($model->files);die;
 ?>
 
-<!-- <div class="card my-3" style="width: 18rem;">
-    <img src="..." class="card-img-top" alt="...">
-    <div class="card-body">
-        <h5 class="card-title">< $model->title ?></h5>
-        <p class="card-text">< $model->description ?></p>
-    </div>
-     Html::a('edit', ['update', 'id' => $model->id], ['class' => 'btn btn-outline-warning']) #?>
-</div> -->
-
 <div class="card my-3" style="width: 18rem;">
-    <!-- <img src="..." class="card-img-top" alt="..."> -->
-    <?php if ($model['files']): ?>
-        <div class="img_block">
-            <?= Html::img('/uploads/' . $model['files'][0]['file_url'], ['alt' => 'картинка', 'class' => 'w-100']) ?>
+
+    <?php if ($model->files): ?>
+        <div id="myCarousel" class="carousel slide mb-6 w-100" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <?php foreach ($model->files as $index => $file): ?>
+                    <?php if ($index == 0): ?>
+                        <div class="carousel-item active">
+                        <?php else: ?>
+                            <div class="carousel-item">
+                            <?php endif ?>
+                            <?= Html::img('/uploads/' . $file->title, ['class' => 'w-100', 'alt' => 'картинка'])  ?>
+                            </div>
+                        <?php endforeach ?>
+                        </div>
+            </div>
+
+        <?php endif ?>
+
+        <div class="card-body">
+            <h5 class="card-title">
+                <?= $model->title ?>
+            </h5>
+            <p class="card-text">
+                <?= $model->description ?>
+            </p>
         </div>
-    <?php endif ?>
-    <div class="card-body">
-        <h5 class="card-title"><?= $model['title'] ?></h5>
-        <p class="card-text"><?= $model['description'] ?></p>
-        <?= Html::a('edit', ['update', 'id' => $model['id']], ['class' => 'btn btn-outline-warning']) ?>
-    </div>
-</div>
+        <?= Html::a('edit', ['update', 'id' => $model->id], ['class' => 'btn btn-outline-warning']) ?>
+        </div>

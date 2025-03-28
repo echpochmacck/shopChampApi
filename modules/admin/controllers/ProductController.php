@@ -4,6 +4,7 @@ namespace app\modules\admin\controllers;
 
 use app\models\File;
 use app\models\Product;
+use app\models\ProductSearch;
 use yii\data\ActiveDataProvider;
 use yii\data\ArrayDataProvider;
 use yii\web\Controller;
@@ -41,43 +42,11 @@ class ProductController extends Controller
      */
     public function actionIndex()
     {
-        $products = Product::find()
-            ->asArray()
-            ->all();
-      
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => array_map(function ($product) {
-                $product['files'] = File::find()
-                    ->select(['title as file_url'])
-                    ->asArray()
-                    ->where(['prodcut_id' => $product['id']])
-                    ->all();
-                return $product;
-            }, $products),
-
-        ]);
-        // $products = Product::find();
-        // $dataProvider = new ActiveDataProvider([
-        //     'query' => array_map(function ($product) {
-        //         return $product->files = File::find()
-        //             ->select(['title as file_url'])
-        //             ->asArray()
-        //             ->where(['product_id' => $product->id])
-        //             ->all();
-        //     }, $products),
-        //     /*
-        //     'pagination' => [
-        //         'pageSize' => 50
-        //     ],
-        //     'sort' => [
-        //         'defaultOrder' => [
-        //             'id' => SORT_DESC,
-        //         ]
-        //     ],
-        //     */
-        // ]);
+        $searchModel = new ProductSearch();
+        $dataProvider = $searchModel->search($this->request->queryParams);
 
         return $this->render('index', [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
     }
@@ -127,9 +96,8 @@ class ProductController extends Controller
     public function actionUpdate($id)
     {
         $model = $this->findModel($id);
-
         if ($this->request->isPost && $model->load($this->request->post())) {
-            $model->files = UploadedFile::getInstances($model, 'files');
+            $model->newFiles = UploadedFile::getInstances($model, 'newFiles');
             if ($model->validate()) {
                 $model->save(false);
                 $model->upload();

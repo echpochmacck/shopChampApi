@@ -96,13 +96,13 @@ class OrderController extends Controller
         $model = $this->findModel($id);
 
 
-
+        
         if ($this->request->isPost && $model->load($this->request->post(), 'Order')) {
             if ($model->status_id == Status::getStatusId('Отменен')) {
                 return $this->redirect(['order/ban', 'id' => $model->id]);
             } else {
-                $model->save();
-                return $this->redirect(['view', 'id' => $model->id]);
+                $model->save(false);
+                return $this->redirect(['index']);
             }
         }
 
@@ -118,6 +118,8 @@ class OrderController extends Controller
 
         if ($this->request->isPost && $ban->load($this->request->post())) {
             $ban->order_id = $model->id;
+            $model->status_id = Status::getStatusId('Отменен');
+            $model->save(false);
             $ban->Save(false);
             return $this->redirect(['index']);
         }
