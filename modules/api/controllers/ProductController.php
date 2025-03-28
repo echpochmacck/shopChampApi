@@ -69,7 +69,7 @@ class ProductController extends \yii\rest\ActiveController
             $model->load($data, '');
             if ($model->validate()) {
                 $dataProvider = new ArrayDataProvider([
-                    'allModels' =>  Product::getProduct(['sort_quantity' => 1]),
+                    'allModels' =>  Product::getProduct(['sort_quantity' => 1, 'file_info' => 1]),
                     'pagination' => [
                         'page' =>  --$model->page,
                         'pageSize' => $model->count
@@ -101,7 +101,7 @@ class ProductController extends \yii\rest\ActiveController
                         'operator' => 'like',
                         'field' => $key,
                         'val' => $val
-                    ], array_keys($data), array_values($data))]),
+                    ], array_keys($data), array_values($data)),  'file_info' => 1]),
                     'code' => 200,
                     'message' => 'список товаров по поиску получен'
                 ]
@@ -109,7 +109,7 @@ class ProductController extends \yii\rest\ActiveController
         }
         return [
             'data' => [
-                'products' => Product::getProduct(['sort_quantity' => 1]),
+                'products' => Product::getProduct(['sort_quantity' => 1, 'file_info' => 1]),
                 'code' => 200,
                 'message' => 'список товаров получен'
             ]
@@ -117,7 +117,7 @@ class ProductController extends \yii\rest\ActiveController
     }
     public function actionGetProduct($id)
     {
-        $product =  Product::getProduct(['product_id' => $id]);
+        $product =  Product::getProduct(['product_id' => $id, 'file_info' => 1]);
         if ($product) {
             return [
                 'data' => [

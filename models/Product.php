@@ -124,7 +124,6 @@ class Product extends \yii\db\ActiveRecord
 
         $query->filterWhere(['product.id' => $data['product_id'] ?? null]);
 
-        $query->asArray();
         if (isset($data['cart_id'])) {
             $query
                 ->addSelect(['cart.id as cart_id', 'cart_composition.quantity as quantity_in_cart', 'cart_composition.poisition_sum as position_sum'])
@@ -132,6 +131,10 @@ class Product extends \yii\db\ActiveRecord
                 ->innerJoin('cart', 'cart.id = cart_composition.cart_id')
                 ->where(['user_id' => Yii::$app->user->id])
             ;
+        }
+        if (isset($data['file_info'])) {
+            $query
+                ->with('files');
         }
         if (isset($data['sort_quantity'])) {
             $query
@@ -154,16 +157,20 @@ class Product extends \yii\db\ActiveRecord
             }
         }
 
+        $query->asArray();
 
         if (isset($data['product_id'])) {
             return $query->one();
         } else {
             $res = $query->all();
-
-
-            return $res;
+            return array_map(function ($val) {
+                $val['files'] = $val['files'] ? array_map(fn($val) => Yii::$app->request->getHostInfo() . '/uploads/' . $val['title'], $val['files']) : '';
+                return $val;
+            }, $res);
         }
     }
+    
+    
     public static function getPosSum($quantity, $price)
     {
         return $quantity * $price;
