@@ -1,3 +1,17 @@
+@keyframes mySlide {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
+
+.slide_img {
+    animation: mySlide 1s linear 1;
+}
+
+
 main > .container {
     padding: 70px 15px 20px;
 }

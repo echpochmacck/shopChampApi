@@ -8,17 +8,22 @@ use yii\bootstrap5\ActiveForm;
 /** @var yii\widgets\ActiveForm $form */
 ?>
 
-<div class="product-search">
-
+<div class="product-search col-lg-5">
     <?php $form = ActiveForm::begin([
         'action' => ['index'],
         'method' => 'get',
         'options' => [
             'data-pjax' => 1
         ],
+        'fieldConfig' => [
+            'template' => "{label}\n{input}\n{error}",
+            'labelOptions' => ['class' => 'col-lg-1 col-form-label mr-lg-3'],
+            'inputOptions' => ['class' => 'col-lg-3 form-control'],
+            'errorOptions' => ['class' => 'col-lg-7 invalid-feedback'],
+        ],
     ]); ?>
 
-    <?= $form->field($model, 'id')->textInput(['class' => 'w-3']) ?>
+    <?= $form->field($model, 'id')->textInput() ?>
 
     <?= $form->field($model, 'title')->textInput() ?>
 

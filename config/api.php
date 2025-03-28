@@ -84,7 +84,6 @@ $config = [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
-                // 'api/<controller>/<action>' => 'api/<controller>/<action>',
                 'POST api/user/login' => 'api/user/login',
                 'POST api/user/register' => 'api/user/register',
                 'POST api/user/logout' => 'api/user/logout',
@@ -96,17 +95,7 @@ $config = [
                 'POST api/order/new' => 'api/order/make-order',
                 'POST api/order2/new' => 'api/order2/make-order',
                 'GET api/order/<id>' => 'api/order/get-order',
-                // [
-                //     'class' => 'yii\rest\UrlRule',
-                //     'controller' => 'user',
-                //     // 'module' => 'api',
-                //     'pluralize' => false,
-                //     'prefix' => 'api',
-                //     'extraPatterns' => [
-                //         'POST login' => 'login'
-                //     ]
-                //     // 'prefix' => ''
-                // ],
+
             ],
         ]
 

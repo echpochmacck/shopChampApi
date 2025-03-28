@@ -27,6 +27,7 @@ class Module extends \yii\base\Module
 
     public function behaviors()
     {
+
         return [
             'access' => [
                 'class' => AccessControl::class,
@@ -36,7 +37,7 @@ class Module extends \yii\base\Module
                         'controllers' => ['admin/default'],
                         'actions' => ['login'],
                     ],
-                    
+
                     [
                         'allow' => true,
                         'roles' => ['@'],
@@ -44,7 +45,12 @@ class Module extends \yii\base\Module
                     ],
 
                 ],
-                'denyCallback' => fn() => Yii::$app->response->redirect('/admin/default/login')
+                'denyCallback' => function () {
+                    if (Yii::$app->user->isGuest) {
+                        return    Yii::$app->response->redirect('/admin/default/login');
+                    }
+                    return Yii::$app->response->redirect('/site');
+                }
             ],
         ];
     }

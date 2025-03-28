@@ -135,8 +135,9 @@ class Product extends \yii\db\ActiveRecord
         }
         if (isset($data['sort_quantity'])) {
             $query
-                ->where('quantity > 0');
+                ->andWhere('quantity > 1');
         }
+
         if (isset($data['order_id'])) {
             $query
                 ->addSelect(['order.id as order_id', 'order_composition.quantity as quantity', 'order_composition.position_sum as position_sum'])
@@ -145,18 +146,19 @@ class Product extends \yii\db\ActiveRecord
                 ->where(['user_id' => Yii::$app->user->id, 'order.id' => $data['order_id']])
             ;
         }
+        if (isset($data['search'])) {
+            // var_dump($data['search'] );die;
+            foreach ($data['search'] as $val) {
+                $query
+                    ->andFilterWhere([$val['operator'],  $val['field'], $val['val']]);
+            }
+        }
+
+
         if (isset($data['product_id'])) {
             return $query->one();
         } else {
             $res = $query->all();
-            // if ($data['category_info']) {
-            // return  array_map(function ($product) {
-            //     $product['categories'][] = Category::find()->select('title')
-            //         ->innerJoin('product_category', 'product_category.category_id = category.id')
-            //         ->where(['product_id' => $product['id']])
-            //         ->asArray()->all();
-            //     return $product;
-            // }, $res);
 
 
             return $res;

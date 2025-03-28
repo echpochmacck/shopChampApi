@@ -29,7 +29,7 @@ $(() => {
         const dataTransfer = new DataTransfer();
         files.forEach(file => dataTransfer.items.add(file));
         // console.log(dataTransfer)
-        console.log($('#hiddenInpt'))
+        // console.log($('#hiddenInpt'))
         $('#hiddenInpt')[0].files = dataTransfer.files
         // console.log($('#hiddenInpt')[0].files)
         printFiles(files);
